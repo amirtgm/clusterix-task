@@ -1,0 +1,22 @@
+{
+	"name": "clusterix-news",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"dev": "bun --filter './apps/*' dev",
+		"build": "bun --filter '*' build",
+		"test": "bun --filter '*' test",
+		"lint": "bunx biome check .",
+		"fix": "bunx biome check --write .",
+		"format": "bunx biome format --write .",
+		"lint:changed": "bunx biome check --changed",
+		"lint:staged": "bunx biome check --staged"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.4",
+		"lefthook": "^2.0.2"
+	}
+}
