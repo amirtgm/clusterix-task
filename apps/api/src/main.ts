@@ -1,16 +1,20 @@
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
-import 'dotenv/config';
+import type { EnvConfig } from './config/configuration';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bodyParser: false, // required for Better Auth
   });
-  // If your frontend runs on another origin, keep CORS aligned
+  const configService = app.get(ConfigService<EnvConfig, true>);
   app.enableCors({
-    origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
+    origin: configService.get('FRONTEND_ORIGIN', { infer: true }),
     credentials: true,
   });
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(
+    configService.get('PORT', { infer: true }),
+    configService.get('HOST', { infer: true }),
+  );
 }
 bootstrap();
