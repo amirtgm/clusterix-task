@@ -5,12 +5,8 @@ services:
     image: postgres:16-alpine
     container_name: clusterix-db
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: clusterix
-      POSTGRES_USER: clusterix
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-    secrets:
-      - postgres_password
+    env_file:
+      - ./apps/api/.env.prod
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
@@ -24,6 +20,8 @@ services:
       retries: 10
     ports:
       - "5432:5432"
+    networks:
+      - backend
 
   api:
     build:
@@ -34,38 +32,60 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      NODE_ENV: production
-      # Not secrets:
-      BETTER_AUTH_URL: http://api:3000
-      FRONTEND_ORIGIN: http://localhost:8080
-      PORT: 3000
-    secrets:
-      - database_url
-      - better_auth_secret
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./apps/api/.env.prod
     ports:
       - "3000:3000"
+    networks:
+      - backend
+
+  redis:
+    image: redis:8.2.3-alpine
+    container_name: clusterix-redis
+    restart: unless-stopped
+    env_file:
+      - ./apps/api/.env.prod
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD not set}
+    command:
+      - sh
+      - -c
+      - >-
+        redis-server --appendonly yes --save 60 1 --loglevel warning
+        --requirepass "$${REDIS_PASSWORD}"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", 'redis-cli -a "$${REDIS_PASSWORD}" ping | grep PONG']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
 
   web:
+    env_file:
+      - ./apps/api/.env.prod
     build:
       context: ./apps/web
       dockerfile: Dockerfile
-      args:
-        VITE_API_URL: http://localhost:3000
     container_name: clusterix-web
     restart: unless-stopped
     depends_on:
       - api
     ports:
       - "8080:80"
+    networks:
+      - backend
 
 volumes:
   db_data:
+  redis_data:
 
-secrets:
-  postgres_password:
-    file: ./secrets/postgres_password
-  database_url:
-    file: ./secrets/database_url
-  better_auth_secret:
-    file: ./secrets/better_auth_secret
+networks:
+  backend:
+    driver: bridge

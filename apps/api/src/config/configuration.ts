@@ -1,17 +1,25 @@
 import { z } from 'zod';
 
+const nodeEnv = process.env.NODE_ENV ?? 'development';
+
 export const envSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
     .default('development'),
-  HOST: z.string().default('0.0.0.0'),
-  PORT: z.coerce.number().int().min(0).max(65535).default(3000),
-  FRONTEND_ORIGIN: z.url().default('http://localhost:5173'),
+  HOST: z.string(),
+  PORT: z.coerce.number().int().min(0).max(65535),
+  FRONTEND_ORIGIN: z.url(),
   BETTER_AUTH_SECRET: z
     .string()
     .min(32, 'BETTER_AUTH_SECRET must be at least 32 characters long'),
   BETTER_AUTH_URL: z.url(),
   DATABASE_URL: z.string().min(1),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.coerce.number().int().min(0).max(65535),
+  REDIS_USER: z.string().min(1),
+  REDIS_PASSWORD: z
+    .string()
+    .min(12, 'REDIS_PASSWORD must be at least 12 characters long'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -25,6 +33,10 @@ export const configuration = () => {
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
     DATABASE_URL: process.env.DATABASE_URL,
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT,
+    REDIS_USER: process.env.REDIS_USER,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
   });
   if (!parsed.success) {
     const formattedError = parsed.error.issues
@@ -35,7 +47,7 @@ export const configuration = () => {
   return parsed.data;
 };
 
-const nodeEnv = process.env.NODE_ENV ?? 'development';
-
+// Use the app-local env files. The app will load `.env.development` during
+// development and `.env.prod` in production when run from the `apps/api` folder.
 export const envFilePath =
   nodeEnv === 'production' ? '.env.prod' : '.env.development';
