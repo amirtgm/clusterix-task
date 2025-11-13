@@ -33,6 +33,7 @@
 		"bullmq": "^5.63.0",
 		"dayjs": "^1.11.19",
 		"dotenv": "^17.2.3",
+		"nestjs-zod": "^5.0.1",
 		"prisma": "^6.19.0",
 		"reflect-metadata": "^0.2.2",
 		"rxjs": "^7.8.1",
