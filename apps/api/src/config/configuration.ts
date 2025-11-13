@@ -20,6 +20,9 @@ export const envSchema = z.object({
   REDIS_PASSWORD: z
     .string()
     .min(12, 'REDIS_PASSWORD must be at least 12 characters long'),
+  NEWS_API_KEY: z.string().min(1),
+  GUARDIAN_API_KEY: z.string().min(1),
+  NYT_API_KEY: z.string().min(1),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -37,6 +40,9 @@ export const configuration = () => {
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_USER: process.env.REDIS_USER,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    NEWS_API_KEY: process.env.NEWS_API_KEY,
+    GUARDIAN_API_KEY: process.env.GUARDIAN_API_KEY,
+    NYT_API_KEY: process.env.NYT_API_KEY,
   });
   if (!parsed.success) {
     const formattedError = parsed.error.issues

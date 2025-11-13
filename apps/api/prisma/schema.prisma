@@ -10,15 +10,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id              String          @id
+  name            String
+  email           String
+  emailVerified   Boolean         @default(false)
+  image           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @default(now()) @updatedAt
+  sessions        Session[]
+  accounts        Account[]
+  newsPreferences NewsPreference?
 
   @@unique([email])
   @@map("user")
@@ -67,4 +68,63 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+model Source {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
+}
+
+model Publisher {
+  id        String    @id @default(cuid())
+  name      String
+  domain    String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
+}
+
+model Article {
+  id          String     @id @default(cuid())
+  sourceId    String
+  publisherId String?
+  externalId  String
+  url         String     @unique
+  title       String
+  summary     String?
+  content     String?
+  author      String?
+  language    String?
+  category    String?
+  publishedAt DateTime
+  fetchedAt   DateTime   @default(now())
+  contentHash String?
+  raw         Json?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  source      Source     @relation(fields: [sourceId], references: [id])
+  publisher   Publisher? @relation(fields: [publisherId], references: [id])
+
+  @@unique([sourceId, externalId])
+  @@index([publishedAt])
+  @@index([publisherId, publishedAt])
+  @@index([category])
+  @@index([sourceId, publishedAt])
+}
+
+model NewsPreference {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  preferredSources    String[] @default([])
+  preferredCategories String[] @default([])
+  preferredAuthors    String[] @default([])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("news_preference")
 }
