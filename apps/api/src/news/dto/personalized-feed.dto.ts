@@ -3,14 +3,14 @@ import { z } from "zod";
 
 // Personalized feed schema
 const PersonalizedFeedSchema = z.object({
-  limit: z
+  limit: z.coerce
     .number()
     .int()
     .min(1, "Limit must be at least 1")
     .max(100, "Limit must not exceed 100")
     .optional()
     .default(20),
-  offset: z
+  offset: z.coerce
     .number()
     .int()
     .min(0, "Offset must be non-negative")

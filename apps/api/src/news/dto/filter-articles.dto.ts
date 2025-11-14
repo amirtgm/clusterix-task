@@ -1,6 +1,10 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
+const stringArray = z
+  .union([z.string().min(1), z.array(z.string().min(1))])
+  .transform((value) => (Array.isArray(value) ? value : [value]));
+
 // Filter schema with date, category, and source support
 const FilterArticlesSchema = z.object({
   startDate: z.iso
@@ -11,12 +15,10 @@ const FilterArticlesSchema = z.object({
     .datetime()
     .optional()
     .describe("End date for filtering articles (ISO 8601 format)"),
-  categories: z
-    .array(z.string().min(1))
+  categories: stringArray
     .optional()
     .describe("Array of categories to filter by"),
-  sources: z
-    .array(z.string().min(1))
+  sources: stringArray
     .optional()
     .describe("Array of source IDs or names to filter by"),
   sortBy: z
@@ -29,14 +31,14 @@ const FilterArticlesSchema = z.object({
     .optional()
     .default("desc")
     .describe("Sort order (ascending or descending)"),
-  limit: z
+  limit: z.coerce
     .number()
     .int()
     .min(1, "Limit must be at least 1")
     .max(100, "Limit must not exceed 100")
     .optional()
     .default(20),
-  offset: z
+  offset: z.coerce
     .number()
     .int()
     .min(0, "Offset must be non-negative")

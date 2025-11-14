@@ -6,6 +6,7 @@ import { NewsRepository } from "../../news/news.repository";
 import type { NewsSourceAdapter } from "../../news/news.types";
 import { GuardianApiAdapter } from "./adapters/guardian-api.adapter";
 import { NewsApiAdapter } from "./adapters/news-api.adapter";
+import { NyTimesApiAdapter } from "./adapters/nyt-api.adapter";
 import {
   FETCH_LATEST_JOB,
   type ImportNewsJobPayload,
@@ -30,7 +31,8 @@ export class ImportNewsService implements OnModuleInit {
     private readonly queue: Queue<ImportNewsJobPayload>,
     private readonly newsRepository: NewsRepository,
     private readonly newsApiAdapter: NewsApiAdapter,
-    private readonly guardianAdapter: GuardianApiAdapter
+    private readonly guardianAdapter: GuardianApiAdapter,
+    private readonly nyTimesAdapter: NyTimesApiAdapter
   ) {}
 
   async onModuleInit() {
@@ -90,7 +92,11 @@ export class ImportNewsService implements OnModuleInit {
   }
 
   async sync(options?: ImportNewsWorkerOptions) {
-    for (const adapter of [this.newsApiAdapter, this.guardianAdapter]) {
+    for (const adapter of [
+      this.newsApiAdapter,
+      this.guardianAdapter,
+      this.nyTimesAdapter,
+    ]) {
       await this.syncAdapter(adapter, options);
     }
   }

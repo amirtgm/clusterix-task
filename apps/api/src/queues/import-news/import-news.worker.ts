@@ -3,6 +3,7 @@ import { NewsRepository } from '../../news/news.repository';
 import type { NewsSourceAdapter } from '../../news/news.types';
 import { GuardianApiAdapter } from './adapters/guardian-api.adapter';
 import { NewsApiAdapter } from './adapters/news-api.adapter';
+import { NyTimesApiAdapter } from './adapters/nyt-api.adapter';
 
 const DEFAULT_BACKFILL_DAYS = 7;
 const DAY_IN_MS = 86_400_000;
@@ -20,10 +21,15 @@ export class ImportNewsWorker {
     private readonly repository: NewsRepository,
     private readonly newsApiAdapter: NewsApiAdapter,
     private readonly guardianAdapter: GuardianApiAdapter,
+    private readonly nyTimesAdapter: NyTimesApiAdapter,
   ) {}
 
   async sync(options?: ImportNewsWorkerOptions) {
-    for (const adapter of [this.newsApiAdapter, this.guardianAdapter]) {
+    for (const adapter of [
+      this.newsApiAdapter,
+      this.guardianAdapter,
+      this.nyTimesAdapter,
+    ]) {
       await this.syncAdapter(adapter, options);
     }
   }
