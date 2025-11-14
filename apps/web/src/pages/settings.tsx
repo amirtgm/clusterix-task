@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { FilterChip } from "@/components/filter-chip";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,10 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { fetchApi } from "@/lib/fetch-client";
-import { newsKeys } from "@/lib/news";
-import type { NewsPreferencesPayload, UserNewsPreferences } from "@/lib/news";
 import { useAvailableNewsFilters, useNewsPreferences } from "@/hooks/use-news";
+import { fetchApi } from "@/lib/fetch-client";
+import type { NewsPreferencesPayload, UserNewsPreferences } from "@/lib/news";
+import { newsKeys } from "@/lib/news";
 
 const emptyPreferences: UserNewsPreferences = {
   sources: [],
@@ -36,10 +36,8 @@ export function SettingsPage() {
   const [authorsInput, setAuthorsInput] = useState("");
   const queryClient = useQueryClient();
 
-  const {
-    data: availableFilters,
-    isPending: filtersPending,
-  } = useAvailableNewsFilters();
+  const { data: availableFilters, isPending: filtersPending } =
+    useAvailableNewsFilters();
   const preferencesQuery = useNewsPreferences();
 
   const serverPreferences = preferencesQuery.data?.preferences;

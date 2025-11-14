@@ -1,7 +1,6 @@
 import { createZodDto } from "nestjs-zod";
 import { z } from "zod";
 
-// Personalized feed schema
 const PersonalizedFeedSchema = z.object({
   limit: z.coerce
     .number()

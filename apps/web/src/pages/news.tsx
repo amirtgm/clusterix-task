@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { NewsArticleCard } from "@/components/news/news-article-card";
+import { NewsFilters } from "@/components/news/news-filters";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { NewsFilters } from "@/components/news/news-filters";
-import { NewsArticleCard } from "@/components/news/news-article-card";
 import {
   useArticleCollection,
   useAvailableNewsFilters,
@@ -50,14 +50,9 @@ export function NewsPage() {
     data: searchArticles,
     isPending: searchPending,
     isFetching: searchFetching,
-  } = useSearchArticles(
-    searchKeyword,
-    PAGE_SIZE,
-    page * PAGE_SIZE,
-    {
-      enabled: initialFiltersApplied && isSearching,
-    }
-  );
+  } = useSearchArticles(searchKeyword, PAGE_SIZE, page * PAGE_SIZE, {
+    enabled: initialFiltersApplied && isSearching,
+  });
   const preferencesQuery = useNewsPreferences(
     PREFERENCES_QUERY_PARAMS.limit,
     PREFERENCES_QUERY_PARAMS.offset

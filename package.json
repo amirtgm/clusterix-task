@@ -1,10 +1,6 @@
 {
 	"name": "clusterix-news",
 	"private": true,
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
 	"scripts": {
 		"dev": "bun --filter './apps/*' dev",
 		"build": "bun --filter '*' build",

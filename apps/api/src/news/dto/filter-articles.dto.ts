@@ -5,7 +5,6 @@ const stringArray = z
   .union([z.string().min(1), z.array(z.string().min(1))])
   .transform((value) => (Array.isArray(value) ? value : [value]));
 
-// Filter schema with date, category, and source support
 const FilterArticlesSchema = z.object({
   startDate: z.iso
     .datetime()
