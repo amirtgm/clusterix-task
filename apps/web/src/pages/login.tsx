@@ -1,0 +1,26 @@
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { LoginForm } from "@/components/login-form";
+
+export function LoginPage() {
+  const navigate = useNavigate();
+
+  const handleLoginSuccess = () => {
+    navigate("/");
+  };
+
+  const handleLoginError = (message: string) => {
+    toast.error(message);
+  };
+
+  return (
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+        <LoginForm
+          onSuccess={handleLoginSuccess}
+          onAuthError={handleLoginError}
+        />
+      </div>
+    </div>
+  );
+}
