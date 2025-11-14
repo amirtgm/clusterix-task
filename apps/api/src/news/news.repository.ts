@@ -255,19 +255,26 @@ export class NewsRepository {
     input: UpdateNewsPreferencesInput
   ) {
     const { preferredSources, preferredCategories, preferredAuthors } = input;
+    const updateData: Prisma.NewsPreferenceUpdateInput = {};
+
+    if (preferredSources !== undefined) {
+      updateData.preferredSources = preferredSources;
+    }
+    if (preferredCategories !== undefined) {
+      updateData.preferredCategories = preferredCategories;
+    }
+    if (preferredAuthors !== undefined) {
+      updateData.preferredAuthors = preferredAuthors;
+    }
 
     return this.prisma.newsPreference.upsert({
       where: { userId },
-      update: {
-        ...(preferredSources && { preferredSources }),
-        ...(preferredCategories && { preferredCategories }),
-        ...(preferredAuthors && { preferredAuthors }),
-      },
+      update: updateData,
       create: {
         userId,
-        preferredSources: preferredSources || [],
-        preferredCategories: preferredCategories || [],
-        preferredAuthors: preferredAuthors || [],
+        preferredSources: preferredSources ?? [],
+        preferredCategories: preferredCategories ?? [],
+        preferredAuthors: preferredAuthors ?? [],
       },
     });
   }

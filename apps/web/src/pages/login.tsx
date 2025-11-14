@@ -6,7 +6,7 @@ export function LoginPage() {
   const navigate = useNavigate();
 
   const handleLoginSuccess = () => {
-    navigate("/");
+    navigate("/news");
   };
 
   const handleLoginError = (message: string) => {

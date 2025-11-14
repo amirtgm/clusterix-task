@@ -1,9 +1,9 @@
 import type { RouteObject } from "react-router-dom";
 import App from "@/App";
 import { ProtectedRoute } from "@/components/protected-route";
-import { HomePage } from "@/pages/home";
 import { LoginPage } from "@/pages/login";
 import { NewsPage } from "@/pages/news";
+import { NotFoundPage } from "@/pages/not-found";
 import { SettingsPage } from "@/pages/settings";
 import { SignupPage } from "@/pages/signup";
 
@@ -14,7 +14,11 @@ export const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <ProtectedRoute>
+            <NewsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "login",
@@ -39,6 +43,10 @@ export const routes: RouteObject[] = [
             <SettingsPage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },

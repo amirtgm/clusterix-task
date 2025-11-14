@@ -17,7 +17,9 @@ function appendSearchParam(
   }
 
   if (Array.isArray(value)) {
-    value.forEach((item) => url.searchParams.append(key, String(item)));
+    value.forEach((item) => {
+      url.searchParams.append(key, String(item));
+    });
     return;
   }
 
@@ -33,9 +35,9 @@ function buildUrl(
   );
 
   if (params) {
-    Object.entries(params).forEach(([key, value]) =>
-      appendSearchParam(url, key, value)
-    );
+    Object.entries(params).forEach(([key, value]) => {
+      appendSearchParam(url, key, value);
+    });
   }
 
   return url.toString();

@@ -6,7 +6,7 @@ export function SignupPage() {
   const navigate = useNavigate();
 
   const handleSignupSuccess = () => {
-    navigate("/");
+    navigate("/news");
   };
 
   const handleSignupError = (message: string) => {
