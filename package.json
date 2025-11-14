@@ -10,7 +10,7 @@
 		"format": "bunx biome format --write .",
 		"lint:changed": "bunx biome check --changed",
 		"lint:staged": "bunx biome check --staged",
-		"setup:env": "cp apps/api/.env.prod.example apps/api/.env.prod",
+		"setup:env": "cp apps/api/.env.prod.example apps/api/.env.prod && cp .env.example .env",
 		"setup:docker": "docker compose up -d --build"
 	},
 	"devDependencies": {
